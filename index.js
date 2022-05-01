@@ -25,19 +25,11 @@ async function run() {
       .collection("products");
 
     //get user
-    app.get("/user", async (req, res) => {
+    app.get("/item", async (req, res) => {
       const query = {};
       const cursor = userCollection.find(query);
-      const users = await cursor.toArray();
-      res.send(users);
-
-      app.get("/user", async (req, res) => {
-        const query = {};
-        const cursor = userCollection.find(query);
-        const users = await cursor.toArray();
-        res.send(users);
-      });
-
+      const items = await cursor.toArray();
+      res.send(items);
     });
   } finally {
     // await client.close();
