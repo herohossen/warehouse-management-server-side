@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 const app = express();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const port = process.env.PORT || 8888;
 
 // middleware
@@ -20,21 +20,28 @@ async function run() {
   try {
     await client.connect();
     //database name and colletion
-    const userCollection = client
+    const itemCollection = client
       .db("inventory-management-p11")
       .collection("products");
 
-    //get user
+    //get item
     app.get("/item", async (req, res) => {
       const query = {};
-      const cursor = userCollection.find(query);
+      const cursor = itemCollection.find(query);
       const items = await cursor.toArray();
       res.send(items);
     });
-  } finally {
-    // await client.close();
-  }
-}
+    // Post item Data
+    app.post("/item", async (req, res) => {
+      const newUser = req.body;
+      console.log("adding new user", newUser);
+      const result = await itemCollection.insertOne(newUser);
+      res.send(result);
+    });
+
+
+
+//run funtion
 run().catch(console.dir);
 
 app.get("/", (req, res) => {
