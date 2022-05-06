@@ -9,6 +9,7 @@ const port = process.env.PORT || 8888;
 app.use(cors());
 app.use(express.json());
 
+//Server Connection String
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@inventory-management-p1.mpnfu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
@@ -16,6 +17,7 @@ const client = new MongoClient(uri, {
   serverApi: ServerApiVersion.v1,
 });
 console.log(uri);
+
 async function run() {
   try {
     await client.connect();
@@ -39,13 +41,23 @@ async function run() {
       res.send(result);
     });
 
-
-
+    //Delete a item data
+    app.delete("/item/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      console.log(id, query);
+      const result = await itemCollection.deleteOne(query);
+      res.send(result);
+    });
+  } finally {
+    // await client.close();
+  }
+}
 //run funtion
 run().catch(console.dir);
-
+//Server Running ok
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Srever is running......!");
 });
 
 app.listen(port, () => {
