@@ -49,6 +49,36 @@ async function run() {
       const result = await itemCollection.deleteOne(query);
       res.send(result);
     });
+
+    app.get("/item/:id", async (req, res) => {
+      const id = req.params.id;
+      // console.log(id);
+      const query = { _id: ObjectId(id) };
+      const product = await itemCollection.findOne(query);
+      res.send(product);
+    });
+
+    app.put("/item/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const updatedProduct = req.body;
+
+      console.log(updatedProduct);
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          quantity: updatedProduct.quantity,
+        },
+      };
+      const result = await itemCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      res.send(result);
+    });
+
   } finally {
     // await client.close();
   }
